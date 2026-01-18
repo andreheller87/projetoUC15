@@ -5,50 +5,40 @@ import java.awt.*;
 
 public class Dashboard extends JFrame {
 
+    private JPanel mainPanel;
+
     public Dashboard() {
-       setTitle("Dashboard - Sistema Escola Informática");
 
-    setExtendedState(JFrame.MAXIMIZED_BOTH); // abre em tela cheia
-    setMinimumSize(new Dimension(900, 600)); // tamanho mínimo
-    setLocationRelativeTo(null);
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-    setLayout(new BorderLayout());
+        setTitle("Dashboard - Sistema Escola Informática");
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setMinimumSize(new Dimension(900, 600));
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
         // ======================
-        // HEADER (IMAGEM TOPO)
+        // HEADER (IMAGEM)
         // ======================
-        // ======================
-// HEADER (IMAGEM TOPO ESTICÁVEL)
-// ======================
         JPanel header = new JPanel() {
 
             Image image;
 
             {
-                setPreferredSize(new Dimension(0, 200));
+                setPreferredSize(new Dimension(0, 180));
+                var imgURL = getClass().getResource("/IMG/escola principal.jpg");
 
-                java.net.URL imgURL = getClass().getResource("/IMG/escola principal.jpg");
                 if (imgURL != null) {
                     image = new ImageIcon(imgURL).getImage();
                 } else {
-                    System.out.println("Imagem não encontrada!");
+                    System.out.println("Imagem NÃO encontrada!");
                 }
             }
 
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-
                 if (image != null) {
-                    g.drawImage(
-                            image,
-                            0,
-                            0,
-                            getWidth(), // largura dinâmica
-                            getHeight(), // altura fixa (200)
-                            this
-                    );
+                    g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
                 }
             }
         };
@@ -59,35 +49,62 @@ public class Dashboard extends JFrame {
         // SIDEBAR
         // ======================
         JPanel sidebar = new JPanel();
-        sidebar.setPreferredSize(new Dimension(200, 0));
-        sidebar.setBackground(new Color(52, 58, 64)); // #343a40
-        sidebar.setLayout(new GridLayout(6, 1, 0, 10));
+        sidebar.setPreferredSize(new Dimension(220, 0));
+        sidebar.setBackground(new Color(52, 58, 64));
+        sidebar.setLayout(new GridLayout(8, 1, 0, 10));
 
-        sidebar.add(criarBotaoMenu("Alunos"));
-        sidebar.add(criarBotaoMenu("Cursos"));
-        sidebar.add(criarBotaoMenu("Pagamentos"));
-        sidebar.add(criarBotaoMenu("Comunicados"));
-        sidebar.add(criarBotaoMenu("Perfil"));
+        JButton btnDashboard = criarBotaoMenu("Dashboard");
+        JButton btnAlunos = criarBotaoMenu("Alunos");
+        JButton btnCursos = criarBotaoMenu("Cursos");
+        JButton btnPagamentos = criarBotaoMenu("Pagamentos");
+        JButton btnComunicados = criarBotaoMenu("Comunicados");
+        JButton btnPerfil = criarBotaoMenu("Perfil");
+
+        sidebar.add(btnDashboard);
+        sidebar.add(btnAlunos);
+        sidebar.add(btnCursos);
+        sidebar.add(btnPagamentos);
+        sidebar.add(btnComunicados);
+        sidebar.add(btnPerfil);
 
         add(sidebar, BorderLayout.WEST);
 
         // ======================
-        // ÁREA PRINCIPAL
+        // MAIN PANEL (DINÂMICO)
         // ======================
-        JPanel main = new JPanel();
-        main.setBackground(new Color(245, 245, 245));
-        main.setLayout(new GridLayout(1, 3, 20, 20));
-        main.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(245, 245, 245));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        main.add(criarCard("Total de Alunos", "50"));
-        main.add(criarCard("Total de Cursos", "5"));
-        main.add(criarCard("Pagamentos Pendentes", "3"));
+        mostrarDashboard();
+        add(mainPanel, BorderLayout.CENTER);
 
-        add(main, BorderLayout.CENTER);
+        // ======================
+        // AÇÕES
+        // ======================
+        btnDashboard.addActionListener(e -> mostrarDashboard());
+        btnAlunos.addActionListener(e -> mostrarAlunos());
     }
 
     // ======================
-    // BOTÃO DO MENU
+    // TELAS
+    // ======================
+    public void mostrarDashboard() {
+        mainPanel.removeAll();
+        mainPanel.add(criarDashboardCards(), BorderLayout.CENTER);
+        mainPanel.revalidate();
+        mainPanel.repaint();
+    }
+
+    public void mostrarAlunos() {
+        mainPanel.removeAll();
+        mainPanel.add(new AlunoPanel(this), BorderLayout.CENTER);
+        mainPanel.revalidate();
+        mainPanel.repaint();
+    }
+
+    // ======================
+    // BOTÃO MENU
     // ======================
     private JButton criarBotaoMenu(String texto) {
         JButton btn = new JButton(texto);
@@ -100,8 +117,19 @@ public class Dashboard extends JFrame {
     }
 
     // ======================
-    // CARD
+    // DASHBOARD CARDS
     // ======================
+    private JPanel criarDashboardCards() {
+        JPanel panel = new JPanel(new GridLayout(1, 3, 20, 20));
+        panel.setBackground(new Color(245, 245, 245));
+
+        panel.add(criarCard("Total de Alunos", "50"));
+        panel.add(criarCard("Total de Cursos", "5"));
+        panel.add(criarCard("Pagamentos Pendentes", "3"));
+
+        return panel;
+    }
+
     private JPanel criarCard(String titulo, String valor) {
         JPanel card = new JPanel(new BorderLayout());
         card.setBackground(Color.WHITE);
