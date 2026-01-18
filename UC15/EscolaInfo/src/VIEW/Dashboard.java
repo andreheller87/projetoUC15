@@ -8,7 +8,6 @@ public class Dashboard extends JFrame {
     private JPanel mainPanel;
 
     public Dashboard() {
-
         setTitle("Dashboard - Sistema Escola Informática");
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setMinimumSize(new Dimension(900, 600));
@@ -20,13 +19,11 @@ public class Dashboard extends JFrame {
         // HEADER (IMAGEM)
         // ======================
         JPanel header = new JPanel() {
-
             Image image;
 
             {
                 setPreferredSize(new Dimension(0, 180));
                 var imgURL = getClass().getResource("/IMG/escola principal.jpg");
-
                 if (imgURL != null) {
                     image = new ImageIcon(imgURL).getImage();
                 } else {
@@ -42,7 +39,6 @@ public class Dashboard extends JFrame {
                 }
             }
         };
-
         add(header, BorderLayout.NORTH);
 
         // ======================
@@ -75,19 +71,21 @@ public class Dashboard extends JFrame {
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(new Color(245, 245, 245));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        mostrarDashboard();
         add(mainPanel, BorderLayout.CENTER);
 
+        mostrarDashboard(); // tela inicial
+
         // ======================
-        // AÇÕES
+        // AÇÕES DOS BOTÕES
         // ======================
         btnDashboard.addActionListener(e -> mostrarDashboard());
         btnAlunos.addActionListener(e -> mostrarAlunos());
+        btnCursos.addActionListener(e -> mostrarCursos());
+        // adicionar ações para os outros botões conforme necessidade
     }
 
     // ======================
-    // TELAS
+    // TELAS DINÂMICAS
     // ======================
     public void mostrarDashboard() {
         mainPanel.removeAll();
@@ -99,6 +97,13 @@ public class Dashboard extends JFrame {
     public void mostrarAlunos() {
         mainPanel.removeAll();
         mainPanel.add(new AlunoPanel(this), BorderLayout.CENTER);
+        mainPanel.revalidate();
+        mainPanel.repaint();
+    }
+
+    public void mostrarCursos() {
+        mainPanel.removeAll();
+        mainPanel.add(new CursoPanel(this), BorderLayout.CENTER);
         mainPanel.revalidate();
         mainPanel.repaint();
     }
@@ -149,5 +154,15 @@ public class Dashboard extends JFrame {
         card.add(lblValor, BorderLayout.CENTER);
 
         return card;
+    }
+
+    // ======================
+    // MAIN
+    // ======================
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            Dashboard dash = new Dashboard();
+            dash.setVisible(true);
+        });
     }
 }

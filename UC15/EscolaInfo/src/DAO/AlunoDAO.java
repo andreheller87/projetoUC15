@@ -121,17 +121,16 @@ public class AlunoDAO {
     // DELETE
     // ===========================
     public boolean deletar(int id) {
-        String sql = "DELETE FROM aluno WHERE id_aluno = ?";
-        try (Connection conn = ConexaoDB.conectar();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    String sql = "UPDATE aluno SET status = 'INATIVADO' WHERE id_aluno = ?";
+    try (Connection conn = ConexaoDB.conectar();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
-            int rows = ps.executeUpdate();
-            return rows > 0;
+        ps.setInt(1, id);
+        return ps.executeUpdate() > 0;
 
-        } catch (SQLException e) {
-             System.out.println("ERRO: " + e);
-        }
-        return false;
+    } catch (SQLException e) {
+        System.out.println("ERRO: " + e);
     }
+    return false;
+}
 }
